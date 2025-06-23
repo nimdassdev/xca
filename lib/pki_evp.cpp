@@ -358,7 +358,7 @@ EVP_PKEY *pki_evp::load_ssh_ed25519_privatekey(const QByteArray &ba,
 	if (d[0] || d[1] || d[2] || d[3] != 1)
 		return NULL;
 	content.remove(0, 4);
-	// Handle first occurance of the public key
+	// Handle first occurrence of the public key
 	pub = ssh_key_next_chunk(&content);
 	ssh_key_check_chunk(&pub, "ssh-ed25519");
 	pub = ssh_key_next_chunk(&pub);
@@ -371,7 +371,7 @@ EVP_PKEY *pki_evp::load_ssh_ed25519_privatekey(const QByteArray &ba,
 	priv.remove(0, 8);
 
 	ssh_key_check_chunk(&priv, "ssh-ed25519");
-	// The first pubkey must match the second occurance
+	// The first pubkey must match the second occurrence
 	// in front of the private one
 	if (pub != ssh_key_next_chunk(&priv))
 		return NULL;
@@ -938,14 +938,20 @@ void pki_evp::write_SSH2_ed25519_private(BIO *b, const EVP_PKEY *pkey) const
 {
 #ifndef OPENSSL_NO_EC
 	static const char data0001[] = { 0, 0, 0, 1};
-	char buf_nonce[8];
+	// padding required to bring private key up to required block size for encryption
+	// elected to just add fixed padding as the size of the binary data should not change due to the fixed keysizes
+	static const char padding[] = { 1, 2, 3, 4, 5 };
+	char buf_nonce[4];
 	QByteArray data, priv, pubfull;
 
 	pubfull = SSH2publicQByteArray(true);
 	RAND_bytes((unsigned char*)buf_nonce, sizeof buf_nonce);
 	priv.append(buf_nonce, sizeof buf_nonce);
+	priv.append(buf_nonce, sizeof buf_nonce);
 	priv += pubfull;
 	ssh_key_QBA2data(ed25519PrivKey(pkey) + ed25519PubKey(), &priv);
+	ssh_key_QBA2data("", &priv); // comment (blank)
+	priv.append(padding, sizeof padding);
 
 	data = "openssh-key-v1";
 	data.append('\0');

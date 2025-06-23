@@ -3,19 +3,18 @@
 [![CMake](https://github.com/chris2511/xca/actions/workflows/cmake.yaml/badge.svg)](https://github.com/chris2511/xca/actions/workflows/cmake.yaml)
 
 ## __Release Notes__
- * The latest release is *2.8.0*
- * Most notable new features:
-   - Support for SHA3
-   - Name the MS CryptographicServiceProvider in the comment
-   - OpenSSL PURPOSE and validation results in the certificate details
-   - Support UniveralPrincipalName (UPN) and NameConstraints
-   - Support JSON Web Key (JWK) export format
-   - Hide unusable (expired / revoked) certificates
- * Please report issues on github <https://github.com/chris2511/xca/issues>
+
+* The latest release is *2.9.0*
+* This release fixes some minor issues:
+  * Improve remote database support on macosx
+  * Do not revoke renewed certificate with same serial
+  * Fix default template finding on linux
+  * Use latest OpenSSL and Qt releases for the precompiled releases.
+* Please report issues on github <https://github.com/chris2511/xca/issues>
 
 ## __Changelog:__
 
-A detailled changelog can be found here:
+A detailed changelog can be found here:
 
 <https://hohnstaedt.de/xca/index.php/software/changelog>
 
@@ -76,7 +75,7 @@ XCA can be used with Xcode after initializing the directory with:
 ### Windows
 
 - Install the dependencies
-  - Install Python for windows from the store or https://www.python.org/downloads/windows/
+  - Install Python 3.11 for windows from the store or https://www.python.org/downloads/windows/
   - Install OpenSSL from here: https://slproweb.com/download/Win64OpenSSL-3_1_5.msi and verify the sha256 from https://github.com/slproweb/opensslhashes/blob/master/win32_openssl_hashes.json
   - To install the Qt libraries, cmake and the MinGW compiler [aqtinstall](https://github.com/miurahr/aqtinstall) is used.
     Sphinx is used to generate the documentation
@@ -125,7 +124,7 @@ They should pull in all necessary dependencies.
 
 ### Apple macos
 
-- **PostgreSQL**: Install the https://postgresapp.com/
+- **PostgreSQL**: Driver included since XCA 2.9.0
 - **ODBC**: It requires the `/usr/local/opt/libiodbc/lib/libiodbc.2.dylib`.
     When installing unixodbc via `brew` the library must be symlinked from
     `/opt/homebrew/Cellar/libiodbc/3.52.16/lib/libiodbc.2.dylib`
